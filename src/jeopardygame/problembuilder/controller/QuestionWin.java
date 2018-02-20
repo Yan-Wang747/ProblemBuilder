@@ -18,9 +18,9 @@ public class QuestionWin extends javax.swing.JFrame {
     /**
      * Creates new form QuestionWin
      */
-    private MainWin theMainWin;
+    private final MainWin theMainWin;
     private Question theQuestion;
-    private QuestionManager theQuestionManager;
+    private final QuestionManager theQuestionManager;
     
     public QuestionWin(MainWin theMainWin, QuestionManager theQuestionManager, Question theQuestion) {
         initComponents();
@@ -119,7 +119,7 @@ public class QuestionWin extends javax.swing.JFrame {
     private void reset(){
         this.answerTextField.setText(theQuestion.answerText);
         this.questionTextField.setText(theQuestion.questionText);
-        this.creditsTextField.setText(Integer.toString(theQuestion.credits));
+        this.creditsTextField.setText(Integer.toString(theQuestion.getCredits()));
         this.questionTextField.requestFocus();
     }
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
@@ -130,7 +130,7 @@ public class QuestionWin extends javax.swing.JFrame {
             String answerText = answerTextField.getText();
             int credits = Integer.parseInt(creditsTextField.getText());
             theQuestion = new Question(questionText, answerText, credits, theQuestion.categoryIndex, theQuestion.questionIndex);
-            this.theQuestionManager.addNewQuestion(theQuestion);
+            this.theQuestionManager.addQuestion(theQuestion);
             this.theMainWin.setVisible(true);
             this.dispose();
         }catch(EmptyQuestionException e){
@@ -143,7 +143,7 @@ public class QuestionWin extends javax.swing.JFrame {
             this.answerTextField.requestFocus();
         }catch(NumberFormatException e){
             this.errLabel.setText("Credits have to be a number larger than 0");
-            this.creditsTextField.setText(Integer.toString(this.theQuestion.credits));
+            this.creditsTextField.setText(Integer.toString(this.theQuestion.getCredits()));
             this.creditsTextField.requestFocus();
         }
     }//GEN-LAST:event_addButtonActionPerformed

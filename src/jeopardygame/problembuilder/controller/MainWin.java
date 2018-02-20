@@ -32,8 +32,7 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
         initComponents();
         fileIndex = 0;
         categoryPanels = new ArrayList();
-        theQuestionManager = new QuestionManager();
-        theQuestionManager.addObserver(this);
+        
         reset();
     }
 
@@ -45,11 +44,12 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
         if("+".equals(theButton.getText()) && theQuestionManager.getNumOfQuestions(newQuestion.categoryIndex) < 5)
             this.categoryPanels.get(newQuestion.categoryIndex).addNewQuestionButton("+", this);
         
-        theButton.setText(Integer.toString(newQuestion.credits));  
+        theButton.setText(Integer.toString(newQuestion.getCredits()));  
     }
     
     private void reset(){
-        theQuestionManager.clear();
+        theQuestionManager = new QuestionManager();
+        theQuestionManager.addObserver(this);
         fileNameText.setText(Constants.FILE_NAME + fileIndex);
         questionFile = new File(fileNameText.getText());
         if(questionFile.exists())
@@ -68,10 +68,11 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
         this.mainPanel.removeAll();
         categoryPanels.clear();
         
-        for(Category category : theQuestionManager.categories){
+        for(int i = 0; i < theQuestionManager.getNumOfCategories(); i++){
+            Category category = theQuestionManager.getCategory(i);
             CategoryPanel newCategoryPanel = this.addNewCategoryPanel(category.getCategoryText());
             for(Question question : category.questions)
-                newCategoryPanel.addNewQuestionButton(Integer.toString(question.credits), this);
+                newCategoryPanel.addNewQuestionButton(Integer.toString(question.getCredits()), this);
             
             newCategoryPanel.addNewQuestionButton("+", this);
         }
@@ -100,11 +101,11 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
         JTextField sourceTextField = (JTextField)evt.getSource();
         CategoryPanel sourcePanel = (CategoryPanel)sourceTextField.getParent();
         if(!sourceTextField.getText().equals("")){
-            if(sourcePanel.categoryIndex < theQuestionManager.categories.size())
+            if(sourcePanel.categoryIndex < theQuestionManager.getNumOfCategories()){
                 theQuestionManager.categories.get(sourcePanel.categoryIndex).setCategoryText(sourceTextField.getText());
-            else{
-                Category newCategory = new Category(sourceTextField.getText());
-                theQuestionManager.categories.add(newCategory);
+            }else{ 
+                Category newCategory = new Category(sourceTextField.getText(),sourcePanel.categoryIndex);
+                theQuestionManager.addNewCategory(newCategory);
                 this.addNewCategoryPanel("").addNewQuestionButton("+", this);
                 this.repaint();
             }
