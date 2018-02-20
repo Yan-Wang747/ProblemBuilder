@@ -3,7 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package problembuilder;
+package problembuilder.controller;
+
+import problembuilder.model.Question;
+import problembuilder.controller.MainWin;
 
 /**
  *
@@ -33,7 +36,7 @@ public class QuestionWin extends javax.swing.JFrame {
         answerTextField = new javax.swing.JTextArea();
         questionTextField = new javax.swing.JTextArea();
         creditsTextField = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        addButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -48,12 +51,10 @@ public class QuestionWin extends javax.swing.JFrame {
         questionTextField.setColumns(20);
         questionTextField.setRows(5);
 
-        creditsTextField.setText("jTextField1");
-
-        jButton1.setText("jButton1");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        addButton.setText("Add");
+        addButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                addButtonActionPerformed(evt);
             }
         });
 
@@ -69,7 +70,7 @@ public class QuestionWin extends javax.swing.JFrame {
                         .addGroup(layout.createSequentialGroup()
                             .addComponent(creditsTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton1))
+                            .addComponent(addButton))
                         .addComponent(answerTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 583, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(122, Short.MAX_VALUE))
         );
@@ -83,41 +84,32 @@ public class QuestionWin extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(creditsTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addComponent(addButton, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addGap(75, 75, 75))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
         // TODO add your handling code here:
         String questionText = questionTextField.getText();
         String answerText = answerTextField.getText();
         int credits = Integer.parseInt(creditsTextField.getText());
         Question newQuestion = new Question(questionText, answerText, credits);
-        this.theMainWin.getCategories().get(this.theMainWin.getCategoryIndex()).addQuestion(this.theMainWin.getQuestionIndex(), newQuestion);
+        this.theMainWin.addNewQuestion(newQuestion);
         this.theMainWin.setVisible(true);
         this.dispose();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_addButtonActionPerformed
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-        // TODO add your handling code here:
-        if(this.theMainWin.getCategoryIndex() < this.theMainWin.getCategories().size()){
-            Category theCategory = this.theMainWin.getCategories().get(this.theMainWin.getCategoryIndex());
-            if(this.theMainWin.getQuestionIndex() < theCategory.questions.size()){
-                Question theQuestion = theCategory.questions.get(this.theMainWin.getQuestionIndex());
-                this.questionTextField.setText(theQuestion.questionText);
-                this.answerTextField.setText(theQuestion.answerText);
-                this.creditsTextField.setText(Integer.toString(theQuestion.credits));
-            }
-        }       
+        // TODO add your handling code here:  
     }//GEN-LAST:event_formWindowActivated
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addButton;
     private javax.swing.JTextArea answerTextField;
     private javax.swing.JTextField creditsTextField;
-    private javax.swing.JButton jButton1;
     private javax.swing.JTextArea questionTextField;
     // End of variables declaration//GEN-END:variables
 }

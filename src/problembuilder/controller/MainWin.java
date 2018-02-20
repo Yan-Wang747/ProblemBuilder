@@ -3,12 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package problembuilder;
+package problembuilder.controller;
 
 import java.util.*;
 import java.awt.event.ActionEvent;
 import java.io.*;
 import javax.swing.*;
+import problembuilder.model.Category;
+import problembuilder.view.CategoryPanel;
+import problembuilder.model.Question;
+import problembuilder.view.QuestionButton;
+import problembuilder.model.QuestionFileReader;
+import problembuilder.model.QuestionFileWriter;
 /**
  *
  * @author iqapp
@@ -19,11 +25,10 @@ public class MainWin extends javax.swing.JFrame {
      * Creates new form MainWin
      */
     private final ArrayList<CategoryPanel> categoryPanels;
-    private ObjectOutputStream questionFileOutput;
-    private ObjectInputStream questionFileInput;
     private ArrayList<Category> categories;
     private int categoryIndex, questionIndex;
-    public boolean newQuestionCreated;
+    private File questionFile;
+    public int newCredit;
     
     public MainWin() {
         initComponents();
@@ -31,21 +36,16 @@ public class MainWin extends javax.swing.JFrame {
         categoryIndex = -1;
         questionIndex = -1;
         categories = new ArrayList();
-        File questionFile = new File(fileNameText.getText());
-        try{    
-            if(questionFile.exists()){
-                try{
-                    questionFileInput = new ObjectInputStream(new FileInputStream(questionFile));
-                    categories = (ArrayList<Category>)questionFileInput.readObject();
-                }catch(ClassNotFoundException | IOException e){
-
-                }
-            }
-            questionFileOutput = new ObjectOutputStream(new FileOutputStream(questionFile));
-        }catch(IOException e){
-            System.exit(1);
-        }
+        questionFile = new File(fileNameText.getText());  
+        this.newCredit = -1;
         
+        if(questionFile.exists())
+            try{
+                QuestionFileReader questionReader = new QuestionFileReader(questionFile);
+                categories = questionReader.readCategories();
+            }catch(ClassNotFoundException | IOException e){
+                //Do nothing
+            }
         initCategoryPanel();
     }
 
@@ -60,9 +60,10 @@ public class MainWin extends javax.swing.JFrame {
         this.addNewQuestionButton(addNewCategoryPanel(""), "+");
     }
     
-    private void addNewQuestionButton(CategoryPanel parentPanel, String text){
+    private QuestionButton addNewQuestionButton(CategoryPanel parentPanel, String text){
         QuestionButton newButton = parentPanel.addNewQuestionButton(text);
         newButton.addActionListener(this::buttonAction);
+        return newButton;
     }
     
     private CategoryPanel addNewCategoryPanel(String categoryText){
@@ -96,6 +97,7 @@ public class MainWin extends javax.swing.JFrame {
         this.categoryIndex = ((CategoryPanel)clickedButton.getParent()).categoryIndex;
         this.questionIndex = clickedButton.questionIndex;
         new QuestionWin(this).setVisible(true);
+        
         this.setVisible(false);
     }
     /**
@@ -111,7 +113,7 @@ public class MainWin extends javax.swing.JFrame {
         mainPanel = new javax.swing.JPanel();
         fileNameText = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        saveButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setSize(new java.awt.Dimension(1280, 720));
@@ -128,10 +130,10 @@ public class MainWin extends javax.swing.JFrame {
 
         jButton1.setText("New File");
 
-        jButton2.setText("Save");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        saveButton.setText("Save");
+        saveButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                saveButtonActionPerformed(evt);
             }
         });
 
@@ -148,7 +150,7 @@ public class MainWin extends javax.swing.JFrame {
                 .addGap(0, 10, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton2)
+                .addComponent(saveButton)
                 .addGap(30, 30, 30)
                 .addComponent(jButton1)
                 .addContainerGap())
@@ -163,7 +165,7 @@ public class MainWin extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(saveButton))
                 .addGap(58, 58, 58))
         );
 
@@ -172,32 +174,27 @@ public class MainWin extends javax.swing.JFrame {
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
         // TODO add your handling code here:
-        if(categoryIndex >= 0 && questionIndex >= 0){
-            int credits = this.categories.get(categoryIndex).questions.get(questionIndex).credits;
-            categoryPanels.get(categoryIndex).questionButtons.get(questionIndex).setText(Integer.toString(credits));
+        if(this.newCredit > 0){
+            this.categoryPanels.get(this.categoryIndex).questionButtons.get(this.questionIndex).setText(Integer.toString(this.newCredit));
+            if(this.categoryPanels.get(this.categoryIndex).questionButtons.size() < 5)
+                this.addNewQuestionButton(categoryPanels.get(this.categoryIndex), "+").requestFocus();
+            this.repaint();
         }
     }//GEN-LAST:event_formWindowActivated
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         // TODO add your handling code here:
         try{
-            questionFileOutput.writeObject(this.categories);
-            questionFileOutput.close();
+            QuestionFileWriter questionWriter = new QuestionFileWriter(questionFile);
+            questionWriter.writeCategories(this.categories);
         }catch(IOException e){
             System.exit(1);
         }
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    public int getCategoryIndex(){
-        return this.categoryIndex;
-    }
-    
-    public int getQuestionIndex(){
-        return this.questionIndex;
-    }
-    
-    public ArrayList<Category> getCategories(){
-        return this.categories;
+    }//GEN-LAST:event_saveButtonActionPerformed
+  
+    public void addNewQuestion(Question newQuestion){
+        this.categories.get(this.categoryIndex).addQuestion(questionIndex, newQuestion);
+        this.newCredit = newQuestion.credits;
     }
     /**
      * @param args the command line arguments
@@ -237,8 +234,8 @@ public class MainWin extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField fileNameText;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JPanel mainPanel;
+    private javax.swing.JButton saveButton;
     private javax.swing.JScrollPane scrollPanel;
     // End of variables declaration//GEN-END:variables
 }
