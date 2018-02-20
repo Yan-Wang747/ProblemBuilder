@@ -3,17 +3,8 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/iqapp/Desktop/ProblemBuilder/src/problembuilder/controller/QuestionWin.java</file>
-            <file>file:/C:/Users/iqapp/Desktop/ProblemBuilder/src/problembuilder/exception/EmptyQuestionException.java</file>
-            <file>file:/C:/Users/iqapp/Desktop/ProblemBuilder/src/problembuilder/model/Question.java</file>
-            <file>file:/C:/Users/iqapp/Desktop/ProblemBuilder/src/problembuilder/model/QuestionFileReader.java</file>
-            <file>file:/C:/Users/iqapp/Desktop/ProblemBuilder/src/problembuilder/view/CategoryPanel.java</file>
-            <file>file:/C:/Users/iqapp/Desktop/ProblemBuilder/src/problembuilder/exception/EmptyAnswerException.java</file>
-            <file>file:/C:/Users/iqapp/Desktop/ProblemBuilder/src/problembuilder/controller/MainWin.java</file>
-            <file>file:/C:/Users/iqapp/Desktop/ProblemBuilder/src/problembuilder/model/Category.java</file>
-            <file>file:/C:/Users/iqapp/Desktop/ProblemBuilder/src/problembuilder/constant/Constants.java</file>
-            <file>file:/C:/Users/iqapp/Desktop/ProblemBuilder/src/problembuilder/view/QuestionButton.java</file>
-            <file>file:/C:/Users/iqapp/Desktop/ProblemBuilder/src/problembuilder/model/QuestionFileWriter.java</file>
+            <file>file:/Users/student/Desktop/ProblemBuilder/src/jeopardygame/problembuilder/controller/QuestionWin.java</file>
+            <file>file:/Users/student/Desktop/ProblemBuilder/src/jeopardygame/problembuilder/controller/MainWin.java</file>
         </group>
     </open-files>
 </project-private>
