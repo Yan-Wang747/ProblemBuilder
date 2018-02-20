@@ -9,6 +9,7 @@ import java.awt.Panel;
 import javax.swing.*;
 import java.awt.Dimension;
 import java.util.ArrayList;
+import java.awt.event.ActionListener;
 /**
  *
  * @author student
@@ -33,9 +34,10 @@ public class CategoryPanel extends Panel{
         this.add(categoryTextField);
     }
     
-    public QuestionButton addNewQuestionButton(String text){
+    public QuestionButton addNewQuestionButton(String text, ActionListener lisener){
         QuestionButton newQuestionButton = new QuestionButton(questionButtons.size());
         newQuestionButton.setText(text);
+        newQuestionButton.addActionListener(lisener);
         questionButtons.add(newQuestionButton);
         this.add(newQuestionButton);
         

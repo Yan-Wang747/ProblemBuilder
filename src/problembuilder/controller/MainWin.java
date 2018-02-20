@@ -7,6 +7,7 @@ package problembuilder.controller;
 
 import java.util.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
 import javax.swing.*;
 import problembuilder.model.Category;
@@ -15,11 +16,12 @@ import problembuilder.model.Question;
 import problembuilder.view.QuestionButton;
 import problembuilder.model.QuestionFileReader;
 import problembuilder.model.QuestionFileWriter;
+import problembuilder.constant.*;
 /**
  *
  * @author iqapp
  */
-public class MainWin extends javax.swing.JFrame {
+public class MainWin extends javax.swing.JFrame implements ActionListener{
 
     /**
      * Creates new form MainWin
@@ -28,42 +30,52 @@ public class MainWin extends javax.swing.JFrame {
     private ArrayList<Category> categories;
     private int categoryIndex, questionIndex;
     private File questionFile;
-    public int newCredit;
+    private int fileIndex;
+    private int newCredits;
     
     public MainWin() {
         initComponents();
+        fileIndex = 0;
         categoryPanels = new ArrayList();
-        categoryIndex = -1;
-        questionIndex = -1;
         categories = new ArrayList();
-        questionFile = new File(fileNameText.getText());  
-        this.newCredit = -1;
-        
+        reset();
+    }
+
+    private void reset(){
+        categories.clear();
+        fileNameText.setText(Constants.FILE_NAME + fileIndex);
+        questionFile = new File(fileNameText.getText());
         if(questionFile.exists())
             try{
                 QuestionFileReader questionReader = new QuestionFileReader(questionFile);
                 categories = questionReader.readCategories();
             }catch(ClassNotFoundException | IOException e){
                 //Do nothing
+                System.out.println(e.getMessage());
             }
-        initCategoryPanel();
-    }
+        
+        categoryIndex = -1;
+        questionIndex = -1;
+        newCredits = -1;
 
-    private void initCategoryPanel(){
+        initCategoryPanels();
+    }
+    
+    private void initCategoryPanels(){
+        this.mainPanel.removeAll();
+        categoryPanels.clear();
+        
         for(Category category : categories){
             CategoryPanel newCategoryPanel = this.addNewCategoryPanel(category.getCategoryText());
             for(Question question : category.questions)
-                addNewQuestionButton(newCategoryPanel, Integer.toString(question.credits));
+                newCategoryPanel.addNewQuestionButton(Integer.toString(question.credits), this);
             
-            this.addNewQuestionButton(newCategoryPanel, "+");
+            newCategoryPanel.addNewQuestionButton("+", this);
         }
-        this.addNewQuestionButton(addNewCategoryPanel(""), "+");
-    }
-    
-    private QuestionButton addNewQuestionButton(CategoryPanel parentPanel, String text){
-        QuestionButton newButton = parentPanel.addNewQuestionButton(text);
-        newButton.addActionListener(this::buttonAction);
-        return newButton;
+        
+        addNewCategoryPanel("").addNewQuestionButton("+", this);
+        
+        this.categoryPanels.get(0).categoryTextField.requestFocus();
     }
     
     private CategoryPanel addNewCategoryPanel(String categoryText){
@@ -81,24 +93,44 @@ public class MainWin extends javax.swing.JFrame {
     }
     
     public void categoryTextFieldFocusLost(java.awt.event.FocusEvent evt){
+        this.errLabel.setText("");
         JTextField sourceTextField = (JTextField)evt.getSource();
         CategoryPanel sourcePanel = (CategoryPanel)sourceTextField.getParent();
-        if(sourcePanel.categoryIndex < categories.size())
-            categories.get(sourcePanel.categoryIndex).setCategoryText(sourceTextField.getText());
-        else{
-            Category newCategory = new Category(sourceTextField.getText());
-            categories.add(newCategory);
-            this.addNewQuestionButton(this.addNewCategoryPanel(""), "+");
-        }
+        if(!sourceTextField.getText().equals("")){
+            if(sourcePanel.categoryIndex < categories.size())
+                categories.get(sourcePanel.categoryIndex).setCategoryText(sourceTextField.getText());
+            else{
+                Category newCategory = new Category(sourceTextField.getText());
+                categories.add(newCategory);
+                this.addNewCategoryPanel("").addNewQuestionButton("+", this);
+                this.repaint();
+            }
+        }else
+            if(sourcePanel.categoryIndex < categories.size())
+                sourcePanel.categoryTextField.setText(categories.get(sourcePanel.categoryIndex).getCategoryText());
     }
     
-    public void buttonAction(ActionEvent evt){
+    @Override
+    public void actionPerformed(ActionEvent evt){
+        newQuestionButtonAction(evt);
+    }
+    
+    public void newQuestionButtonAction(ActionEvent evt){
+        this.errLabel.setText("");
         QuestionButton clickedButton = (QuestionButton) evt.getSource();
         this.categoryIndex = ((CategoryPanel)clickedButton.getParent()).categoryIndex;
         this.questionIndex = clickedButton.questionIndex;
-        new QuestionWin(this).setVisible(true);
-        
-        this.setVisible(false);
+        if(categoryIndex < this.categories.size()){
+            Question theQuestion = null;
+            if(this.questionIndex < categories.get(this.categoryIndex).questions.size())
+                theQuestion = categories.get(this.categoryIndex).questions.get(this.questionIndex);
+            
+            new QuestionWin(this, theQuestion).setVisible(true);
+            this.setVisible(false);
+        }else{
+            errLabel.setText("category text is empty.");
+            ((CategoryPanel)clickedButton.getParent()).categoryTextField.requestFocus();
+        }
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -112,8 +144,8 @@ public class MainWin extends javax.swing.JFrame {
         scrollPanel = new javax.swing.JScrollPane();
         mainPanel = new javax.swing.JPanel();
         fileNameText = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
         saveButton = new javax.swing.JButton();
+        errLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setSize(new java.awt.Dimension(1280, 720));
@@ -126,9 +158,7 @@ public class MainWin extends javax.swing.JFrame {
         mainPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
         scrollPanel.setViewportView(mainPanel);
 
-        fileNameText.setText("Question1.ser");
-
-        jButton1.setText("New File");
+        fileNameText.setEditable(false);
 
         saveButton.setText("Save");
         saveButton.addActionListener(new java.awt.event.ActionListener() {
@@ -136,6 +166,8 @@ public class MainWin extends javax.swing.JFrame {
                 saveButtonActionPerformed(evt);
             }
         });
+
+        errLabel.setText("Debug");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -149,10 +181,10 @@ public class MainWin extends javax.swing.JFrame {
                 .addComponent(scrollPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 875, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 10, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(errLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(saveButton)
-                .addGap(30, 30, 30)
-                .addComponent(jButton1)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -164,8 +196,8 @@ public class MainWin extends javax.swing.JFrame {
                 .addComponent(scrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 408, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(saveButton))
+                    .addComponent(saveButton)
+                    .addComponent(errLabel))
                 .addGap(58, 58, 58))
         );
 
@@ -174,11 +206,14 @@ public class MainWin extends javax.swing.JFrame {
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
         // TODO add your handling code here:
-        if(this.newCredit > 0){
-            this.categoryPanels.get(this.categoryIndex).questionButtons.get(this.questionIndex).setText(Integer.toString(this.newCredit));
-            if(this.categoryPanels.get(this.categoryIndex).questionButtons.size() < 5)
-                this.addNewQuestionButton(categoryPanels.get(this.categoryIndex), "+").requestFocus();
-            this.repaint();
+        if(this.newCredits > 0){
+            int numberOfQuestions = this.categories.get(this.categoryIndex).questions.size();
+            if(numberOfQuestions < 5 && this.categoryPanels.get(this.categoryIndex).questionButtons.get(this.questionIndex).getText().equals("+"))
+                categoryPanels.get(this.categoryIndex).addNewQuestionButton("+", this).requestFocus();
+            
+            this.categoryPanels.get(this.categoryIndex).questionButtons.get(this.questionIndex).setText(Integer.toString(this.newCredits));
+            newCredits = 0;
+            this.setVisible(true);
         }
     }//GEN-LAST:event_formWindowActivated
 
@@ -187,14 +222,20 @@ public class MainWin extends javax.swing.JFrame {
         try{
             QuestionFileWriter questionWriter = new QuestionFileWriter(questionFile);
             questionWriter.writeCategories(this.categories);
+            nextFile();
         }catch(IOException e){
             System.exit(1);
         }
     }//GEN-LAST:event_saveButtonActionPerformed
   
-    public void addNewQuestion(Question newQuestion){
+    private void nextFile(){
+        this.fileIndex++;
+        this.reset();
+        this.setVisible(true);
+    }
+    public void addNewQuestion(Question newQuestion){        
         this.categories.get(this.categoryIndex).addQuestion(questionIndex, newQuestion);
-        this.newCredit = newQuestion.credits;
+        this.newCredits = newQuestion.credits;
     }
     /**
      * @param args the command line arguments
@@ -212,15 +253,11 @@ public class MainWin extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainWin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainWin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainWin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(MainWin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        
         //</editor-fold>
 
         /* Create and display the form */
@@ -232,8 +269,8 @@ public class MainWin extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel errLabel;
     private javax.swing.JTextField fileNameText;
-    private javax.swing.JButton jButton1;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JButton saveButton;
     private javax.swing.JScrollPane scrollPanel;

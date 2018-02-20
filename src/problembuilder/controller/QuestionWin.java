@@ -5,8 +5,9 @@
  */
 package problembuilder.controller;
 
-import problembuilder.model.Question;
-import problembuilder.controller.MainWin;
+import problembuilder.model.*;
+import problembuilder.exception.*;
+import javax.swing.JTextField;
 
 /**
  *
@@ -18,10 +19,16 @@ public class QuestionWin extends javax.swing.JFrame {
      * Creates new form QuestionWin
      */
     private MainWin theMainWin;
+    private Question theQuestion;
     
-    public QuestionWin(MainWin theMainWin) {
+    public QuestionWin(MainWin theMainWin, Question theQuestion) {
         initComponents();
         this.theMainWin = theMainWin;
+        if(theQuestion == null)
+            theQuestion = new Question("", "", 0);
+        
+        this.theQuestion = theQuestion;
+        reset();
     }
 
     /**
@@ -37,19 +44,31 @@ public class QuestionWin extends javax.swing.JFrame {
         questionTextField = new javax.swing.JTextArea();
         creditsTextField = new javax.swing.JTextField();
         addButton = new javax.swing.JButton();
+        errLabel = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowActivated(java.awt.event.WindowEvent evt) {
-                formWindowActivated(evt);
-            }
-        });
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         answerTextField.setColumns(20);
         answerTextField.setRows(5);
+        answerTextField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                answerTextFieldFocusGained(evt);
+            }
+        });
 
         questionTextField.setColumns(20);
         questionTextField.setRows(5);
+        questionTextField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                questionTextFieldFocusGained(evt);
+            }
+        });
+
+        creditsTextField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                creditsTextFieldFocusGained(evt);
+            }
+        });
 
         addButton.setText("Add");
         addButton.addActionListener(new java.awt.event.ActionListener() {
@@ -58,20 +77,24 @@ public class QuestionWin extends javax.swing.JFrame {
             }
         });
 
+        errLabel.setText("Debug");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(92, 92, 92)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(questionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 583, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(creditsTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(addButton))
-                        .addComponent(answerTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 583, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(errLabel)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(questionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 583, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(creditsTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(addButton))
+                            .addComponent(answerTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 583, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(122, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -83,33 +106,76 @@ public class QuestionWin extends javax.swing.JFrame {
                 .addComponent(answerTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(creditsTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(addButton, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addGap(75, 75, 75))
+                    .addComponent(creditsTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(addButton))
+                .addGap(28, 28, 28)
+                .addComponent(errLabel)
+                .addGap(32, 32, 32))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void reset(){
+        this.answerTextField.setText(theQuestion.answerText);
+        this.questionTextField.setText(theQuestion.questionText);
+        this.creditsTextField.setText(Integer.toString(theQuestion.credits));
+        this.questionTextField.selectAll();
+    }
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
         // TODO add your handling code here:
-        String questionText = questionTextField.getText();
-        String answerText = answerTextField.getText();
-        int credits = Integer.parseInt(creditsTextField.getText());
-        Question newQuestion = new Question(questionText, answerText, credits);
-        this.theMainWin.addNewQuestion(newQuestion);
-        this.theMainWin.setVisible(true);
-        this.dispose();
+        try{
+            validateData();
+            String questionText = questionTextField.getText();
+            String answerText = answerTextField.getText();
+            int credits = Integer.parseInt(creditsTextField.getText());
+            theQuestion = new Question(questionText, answerText, credits);
+            this.theMainWin.addNewQuestion(theQuestion);
+            this.theMainWin.setVisible(true);
+            this.dispose();
+        }catch(EmptyQuestionException e){
+            this.errLabel.setText(e.getMessage());
+            this.questionTextField.setText(this.theQuestion.questionText);
+            this.questionTextField.requestFocus();
+        }catch(EmptyAnswerException e){
+            this.errLabel.setText(e.getMessage());
+            this.answerTextField.setText(this.theQuestion.answerText);
+            this.answerTextField.requestFocus();
+        }catch(NumberFormatException e){
+            this.errLabel.setText("Credits have to be a number larger than 0");
+            this.creditsTextField.setText(Integer.toString(this.theQuestion.credits));
+            this.creditsTextField.requestFocus();
+        }
     }//GEN-LAST:event_addButtonActionPerformed
 
-    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-        // TODO add your handling code here:  
-    }//GEN-LAST:event_formWindowActivated
+    private void validateData() throws EmptyQuestionException, EmptyAnswerException{
+        if("".equals(this.questionTextField.getText()))
+            throw new EmptyQuestionException();
+        if("".equals(this.answerTextField.getText()))
+            throw new EmptyAnswerException();
+        if(Integer.parseInt(creditsTextField.getText()) <= 0)
+            throw new NumberFormatException();
+    }
+    private void questionTextFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_questionTextFieldFocusGained
+        // TODO add your handling code here:
+        this.questionTextField.selectAll();
+    }//GEN-LAST:event_questionTextFieldFocusGained
+
+    private void answerTextFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_answerTextFieldFocusGained
+        // TODO add your handling code here:
+        this.answerTextField.selectAll();
+    }//GEN-LAST:event_answerTextFieldFocusGained
+
+    private void creditsTextFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_creditsTextFieldFocusGained
+        // TODO add your handling code here:
+        this.creditsTextField.selectAll();
+    }//GEN-LAST:event_creditsTextFieldFocusGained
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
     private javax.swing.JTextArea answerTextField;
     private javax.swing.JTextField creditsTextField;
+    private javax.swing.JLabel errLabel;
     private javax.swing.JTextArea questionTextField;
     // End of variables declaration//GEN-END:variables
 }

@@ -18,6 +18,9 @@ public class QuestionFileWriter {
     }
     
     public void writeCategories(ArrayList<Category> categories) throws IOException{
+        if(categories.isEmpty())
+            return;
+        
         try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(questionFile))) {
             outputStream.writeObject(categories);
             outputStream.close();
