@@ -11,8 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import javax.swing.*;
-import jeopardygame.problembuilder.view.CategoryPanel;
-import jeopardygame.problembuilder.view.QuestionButton;
+import jeopardygame.sharedview.*;
 import jeopardygame.sharedmodel.*;
 /**
  *
@@ -41,15 +40,14 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
         Question newQuestion = (Question)arg;
         QuestionButton theButton = categoryPanels.get(newQuestion.categoryIndex).questionButtons.get(newQuestion.questionIndex);
         
-        if("+".equals(theButton.getText()) && theQuestionManager.getNumOfQuestions(newQuestion.categoryIndex) < 5)
-            this.categoryPanels.get(newQuestion.categoryIndex).addNewQuestionButton("+", this);
+        if("+".equals(theButton.getText()))
+            this.categoryPanels.get(newQuestion.categoryIndex).addNewQuestionButton("+", this, Constants.BUTTON_SIZE);
         
         theButton.setText(Integer.toString(newQuestion.getCredits()));  
     }
     
     private void reset(){
         theQuestionManager = new QuestionManager();
-        theQuestionManager.addObserver(this);
         fileNameText.setText(Constants.FILE_NAME + fileIndex);
         questionFile = new File(fileNameText.getText());
         if(questionFile.exists())
@@ -60,7 +58,8 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
                 //Do nothing
                 System.out.println(e.getMessage());
             }
-
+        
+        theQuestionManager.addObserver(this);
         initCategoryPanels();
     }
     
@@ -71,19 +70,20 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
         for(int i = 0; i < theQuestionManager.getNumOfCategories(); i++){
             Category category = theQuestionManager.getCategory(i);
             CategoryPanel newCategoryPanel = this.addNewCategoryPanel(category.getCategoryText());
-            for(Question question : category.questions)
-                newCategoryPanel.addNewQuestionButton(Integer.toString(question.getCredits()), this);
+            category.questions.forEach((question) -> {
+                newCategoryPanel.addNewQuestionButton(Integer.toString(question.getCredits()), this, Constants.BUTTON_SIZE);
+            });
             
-            newCategoryPanel.addNewQuestionButton("+", this);
+            newCategoryPanel.addNewQuestionButton("+", this, Constants.BUTTON_SIZE);
         }
         
-        addNewCategoryPanel("").addNewQuestionButton("+", this);
+        addNewCategoryPanel("").addNewQuestionButton("+", this, Constants.BUTTON_SIZE);
         
         this.categoryPanels.get(0).categoryTextField.requestFocus();
     }
     
     private CategoryPanel addNewCategoryPanel(String categoryText){
-        CategoryPanel newCategoryPanel = new CategoryPanel(categoryText, categoryPanels.size());
+        CategoryPanel newCategoryPanel = new CategoryPanel(categoryText, categoryPanels.size(), Constants.GAP, Constants.CATEGORY_PANEL_SIZE, Constants.CATEGORY_TEXT_FIELD_SIZE);
         newCategoryPanel.categoryTextField.addFocusListener(new java.awt.event.FocusAdapter() {
             @Override
             public void focusLost(java.awt.event.FocusEvent evt) {
@@ -106,7 +106,7 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
             }else{ 
                 Category newCategory = new Category(sourceTextField.getText(),sourcePanel.categoryIndex);
                 theQuestionManager.addNewCategory(newCategory);
-                this.addNewCategoryPanel("").addNewQuestionButton("+", this);
+                this.addNewCategoryPanel("").addNewQuestionButton("+", this, Constants.BUTTON_SIZE);
                 this.repaint();
             }
         }else
@@ -154,7 +154,9 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setSize(new java.awt.Dimension(1280, 720));
 
-        mainPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+        java.awt.FlowLayout flowLayout1 = new java.awt.FlowLayout(java.awt.FlowLayout.LEADING);
+        flowLayout1.setAlignOnBaseline(true);
+        mainPanel.setLayout(flowLayout1);
         scrollPanel.setViewportView(mainPanel);
 
         fileNameText.setEditable(false);
