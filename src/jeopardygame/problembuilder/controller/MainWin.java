@@ -83,7 +83,7 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
     }
     
     private CategoryPanel addNewCategoryPanel(String categoryText){
-        CategoryPanel newCategoryPanel = new CategoryPanel(categoryText, categoryPanels.size(), Constants.GAP, Constants.CATEGORY_PANEL_SIZE, Constants.CATEGORY_TEXT_FIELD_SIZE);
+        CategoryPanel newCategoryPanel = new CategoryPanel(categoryText, categoryPanels.size(), Constants.GAP, Constants.CATEGORY_PANEL_SIZE);
         newCategoryPanel.categoryTextField.addFocusListener(new java.awt.event.FocusAdapter() {
             @Override
             public void focusLost(java.awt.event.FocusEvent evt) {

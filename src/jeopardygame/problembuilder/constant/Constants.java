@@ -13,7 +13,6 @@ import java.awt.Dimension;
 public class Constants {
     public static final String FILE_NAME = "Question";
     public static final Dimension BUTTON_SIZE = new Dimension(90, 50);
-    public static final Dimension CATEGORY_TEXT_FIELD_SIZE = new Dimension(90, 60);
     public static final Dimension CATEGORY_PANEL_SIZE = new Dimension(100, 80);
     public static final int GAP = 10;
 }
