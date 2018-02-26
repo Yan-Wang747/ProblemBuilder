@@ -37,16 +37,15 @@
               <EmptySpace max="32767" attributes="0"/>
           </Group>
           <Group type="102" alignment="0" attributes="0">
-              <Group type="103" groupAlignment="1" attributes="0">
-                  <Group type="102" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="errLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="753" max="-2" attributes="0"/>
-                      <Component id="saveButton" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <Component id="scrollPanel" min="-2" pref="875" max="-2" attributes="0"/>
-              </Group>
+              <Component id="scrollPanel" min="-2" pref="875" max="-2" attributes="0"/>
               <EmptySpace min="0" pref="10" max="32767" attributes="0"/>
+          </Group>
+          <Group type="102" alignment="1" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="errLabel" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="735" max="-2" attributes="0"/>
+              <Component id="nextFileButton" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -56,13 +55,13 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="fileNameText" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Component id="scrollPanel" pref="408" max="32767" attributes="0"/>
+              <Component id="scrollPanel" pref="403" max="32767" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="errLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Component id="saveButton" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="errLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="nextFileButton" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="58" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -135,18 +134,18 @@
         <Property name="editable" type="boolean" value="false"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="saveButton">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Save"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveButtonActionPerformed"/>
-      </Events>
-    </Component>
     <Component class="javax.swing.JLabel" name="errLabel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Debug"/>
+        <Property name="text" type="java.lang.String" value="Error:"/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="nextFileButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Next File"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="nextFileButtonActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

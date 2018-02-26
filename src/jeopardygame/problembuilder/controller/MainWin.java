@@ -43,7 +43,8 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
         if("+".equals(theButton.getText()))
             this.categoryPanels.get(newQuestion.categoryIndex).addNewQuestionButton("+", this, Constants.BUTTON_SIZE);
         
-        theButton.setText(Integer.toString(newQuestion.getCredits()));  
+        theButton.setText(Integer.toString(newQuestion.getCredits()));
+        this.saveFile();
     }
     
     private void reset(){
@@ -148,8 +149,8 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
         scrollPanel = new javax.swing.JScrollPane();
         mainPanel = new javax.swing.JPanel();
         fileNameText = new javax.swing.JTextField();
-        saveButton = new javax.swing.JButton();
         errLabel = new javax.swing.JLabel();
+        nextFileButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -170,14 +171,14 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
 
         fileNameText.setEditable(false);
 
-        saveButton.setText("Save");
-        saveButton.addActionListener(new java.awt.event.ActionListener() {
+        errLabel.setText("Error:");
+
+        nextFileButton.setText("Next File");
+        nextFileButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                saveButtonActionPerformed(evt);
+                nextFileButtonActionPerformed(evt);
             }
         });
-
-        errLabel.setText("Debug");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -188,14 +189,14 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
                 .addComponent(fileNameText, javax.swing.GroupLayout.PREFERRED_SIZE, 442, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(errLabel)
-                        .addGap(753, 753, 753)
-                        .addComponent(saveButton))
-                    .addComponent(scrollPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 875, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(scrollPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 875, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 10, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(errLabel)
+                .addGap(735, 735, 735)
+                .addComponent(nextFileButton)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -203,28 +204,26 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
                 .addContainerGap()
                 .addComponent(fileNameText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(scrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 408, Short.MAX_VALUE)
+                .addComponent(scrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(errLabel)
-                    .addComponent(saveButton))
-                .addGap(58, 58, 58))
+                    .addComponent(nextFileButton))
+                .addGap(63, 63, 63))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-        // TODO add your handling code here:
+    private void saveFile(){
         try{
             QuestionFileWriter questionWriter = new QuestionFileWriter(questionFile);
-            if(questionWriter.write(theQuestionManager))
-                nextFile();
+            questionWriter.write(theQuestionManager);
         }catch(IOException e){
             System.exit(1);
         }
-    }//GEN-LAST:event_saveButtonActionPerformed
-
+    }
+    
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         // TODO add your handling code here:
         this.setLocationRelativeTo(null);
@@ -232,13 +231,20 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         // TODO add your handling code here:
-        this.saveButtonActionPerformed(null);
+        this.saveFile();
     }//GEN-LAST:event_formWindowClosing
+
+    private void nextFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextFileButtonActionPerformed
+        // TODO add your handling code here:
+        nextFile();
+    }//GEN-LAST:event_nextFileButtonActionPerformed
   
     private void nextFile(){
-        this.fileIndex++;
-        this.reset();
-        this.setVisible(true);
+        if(!this.theQuestionManager.categories.isEmpty()){
+            this.fileIndex++;
+            this.reset();
+            this.setVisible(true);
+        }
     }
     /**
      * @param args the command line arguments
@@ -275,7 +281,7 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
     private javax.swing.JLabel errLabel;
     private javax.swing.JTextField fileNameText;
     private javax.swing.JPanel mainPanel;
-    private javax.swing.JButton saveButton;
+    private javax.swing.JButton nextFileButton;
     private javax.swing.JScrollPane scrollPanel;
     // End of variables declaration//GEN-END:variables
 }
