@@ -152,7 +152,13 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
         errLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
         setSize(new java.awt.Dimension(1280, 720));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         java.awt.FlowLayout flowLayout1 = new java.awt.FlowLayout(java.awt.FlowLayout.LEADING);
         flowLayout1.setAlignOnBaseline(true);
@@ -215,6 +221,11 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
             System.exit(1);
         }
     }//GEN-LAST:event_saveButtonActionPerformed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        // TODO add your handling code here:
+        this.setLocationRelativeTo(null);
+    }//GEN-LAST:event_formWindowOpened
   
     private void nextFile(){
         this.fileIndex++;
