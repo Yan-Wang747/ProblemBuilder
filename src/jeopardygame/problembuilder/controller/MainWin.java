@@ -171,8 +171,6 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
 
         fileNameText.setEditable(false);
 
-        errLabel.setText("Error:");
-
         nextFileButton.setText("Next File");
         nextFileButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -190,7 +188,7 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addComponent(scrollPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 875, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 10, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(errLabel)
