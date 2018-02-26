@@ -158,6 +158,9 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 formWindowOpened(evt);
             }
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
         });
 
         java.awt.FlowLayout flowLayout1 = new java.awt.FlowLayout(java.awt.FlowLayout.LEADING);
@@ -226,6 +229,11 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
         // TODO add your handling code here:
         this.setLocationRelativeTo(null);
     }//GEN-LAST:event_formWindowOpened
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        // TODO add your handling code here:
+        this.saveButtonActionPerformed(null);
+    }//GEN-LAST:event_formWindowClosing
   
     private void nextFile(){
         this.fileIndex++;
