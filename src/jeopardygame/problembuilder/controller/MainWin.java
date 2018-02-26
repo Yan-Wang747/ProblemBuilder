@@ -33,6 +33,7 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
         categoryPanels = new ArrayList();
         
         reset();
+        this.setLocationRelativeTo(null);
     }
 
     @Override
@@ -156,9 +157,6 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
         setResizable(false);
         setSize(new java.awt.Dimension(1280, 720));
         addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowOpened(java.awt.event.WindowEvent evt) {
-                formWindowOpened(evt);
-            }
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
             }
@@ -222,11 +220,6 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
         }
     }
     
-    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        // TODO add your handling code here:
-        this.setLocationRelativeTo(null);
-    }//GEN-LAST:event_formWindowOpened
-
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         // TODO add your handling code here:
         this.saveFile();

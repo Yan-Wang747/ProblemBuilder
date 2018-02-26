@@ -29,6 +29,7 @@ public class QuestionWin extends javax.swing.JFrame {
         this.theQuestion = theQuestion;
         
         reset();
+        this.setLocationRelativeTo(null);
     }
 
     /**
@@ -49,11 +50,6 @@ public class QuestionWin extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowOpened(java.awt.event.WindowEvent evt) {
-                formWindowOpened(evt);
-            }
-        });
 
         answerTextField.setColumns(20);
         answerTextField.setRows(5);
@@ -193,11 +189,6 @@ public class QuestionWin extends javax.swing.JFrame {
         // TODO add your handling code here:
         this.creditsTextField.selectAll();
     }//GEN-LAST:event_creditsTextFieldFocusGained
-
-    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        // TODO add your handling code here:
-        this.setLocationRelativeTo(null);
-    }//GEN-LAST:event_formWindowOpened
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         // TODO add your handling code here:
