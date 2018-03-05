@@ -58,7 +58,6 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
                 theQuestionManager = questionReader.read();
             }catch(ClassNotFoundException | IOException e){
                 //Do nothing
-                System.out.println(e.getMessage());
             }
         
         theQuestionManager.addObserver(this);
