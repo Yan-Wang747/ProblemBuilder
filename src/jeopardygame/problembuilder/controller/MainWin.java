@@ -38,13 +38,7 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
 
     @Override
     public void update(Observable o, Object arg){
-        Question newQuestion = (Question)arg;
-        QuestionButton theButton = categoryPanels.get(newQuestion.categoryIndex).questionButtons.get(newQuestion.questionIndex);
-        
-        if("+".equals(theButton.getText()))
-            this.categoryPanels.get(newQuestion.categoryIndex).addNewQuestionButton("+", this, Constants.BUTTON_SIZE);
-        
-        theButton.setText(Integer.toString(newQuestion.getCredits()));
+        initCategoryPanels();
         this.saveFile();
     }
     
@@ -80,7 +74,7 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
         
         addNewCategoryPanel("").addNewQuestionButton("+", this, Constants.BUTTON_SIZE);
         
-        this.categoryPanels.get(0).categoryTextField.requestFocus();
+        this.categoryPanels.get(categoryPanels.size() - 1).categoryTextField.requestFocus();
     }
     
     private CategoryPanel addNewCategoryPanel(String categoryText){
