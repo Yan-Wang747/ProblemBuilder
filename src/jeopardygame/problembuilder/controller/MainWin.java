@@ -26,6 +26,8 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
     private QuestionManager theQuestionManager;
     private File questionFile;
     private int fileIndex;
+    private final int maxCategories = 6;
+    private final int maxQuestions = 5;
     
     public MainWin() {
         initComponents();
@@ -69,10 +71,12 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
                 newCategoryPanel.addNewQuestionButton(Integer.toString(question.getCredits()), this, Constants.BUTTON_SIZE);
             });
             
-            newCategoryPanel.addNewQuestionButton("+", this, Constants.BUTTON_SIZE);
+            if(category.getNumberOfQuestions() < maxQuestions)
+                newCategoryPanel.addNewQuestionButton("+", this, Constants.BUTTON_SIZE);
         }
         
-        addNewCategoryPanel("").addNewQuestionButton("+", this, Constants.BUTTON_SIZE);
+        if(theQuestionManager.getNumOfCategories() < maxCategories)
+            addNewCategoryPanel("").addNewQuestionButton("+", this, Constants.BUTTON_SIZE);
         
         this.categoryPanels.get(categoryPanels.size() - 1).categoryTextField.requestFocus();
     }
@@ -98,11 +102,14 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
         if(!sourceTextField.getText().equals("")){
             if(sourcePanel.categoryIndex < theQuestionManager.getNumOfCategories()){
                 theQuestionManager.categories.get(sourcePanel.categoryIndex).setCategoryText(sourceTextField.getText());
-            }else{ 
+            }else { 
                 Category newCategory = new Category(sourceTextField.getText(),sourcePanel.categoryIndex);
                 theQuestionManager.addNewCategory(newCategory);
-                this.addNewCategoryPanel("").addNewQuestionButton("+", this, Constants.BUTTON_SIZE);
-                this.repaint();
+                
+                if (categoryPanels.size() < maxCategories){
+                    this.addNewCategoryPanel("").addNewQuestionButton("+", this, Constants.BUTTON_SIZE);
+                    this.repaint();
+                }
             }
         }else
             if(sourcePanel.categoryIndex < theQuestionManager.categories.size())
@@ -145,6 +152,7 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
         fileNameText = new javax.swing.JTextField();
         errLabel = new javax.swing.JLabel();
         nextFileButton = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -169,21 +177,28 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
             }
         });
 
+        jLabel1.setText("Question File:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(86, 86, 86)
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addGap(35, 35, 35)
                 .addComponent(fileNameText, javax.swing.GroupLayout.PREFERRED_SIZE, 442, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
-                .addComponent(scrollPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 875, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(580, 580, 580)
                 .addComponent(errLabel)
-                .addGap(735, 735, 735)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(scrollPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 647, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(nextFileButton)
                 .addContainerGap())
         );
@@ -191,14 +206,16 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(fileNameText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(scrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(errLabel)
-                    .addComponent(nextFileButton))
-                .addGap(63, 63, 63))
+                    .addComponent(fileNameText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addGap(18, 18, 18)
+                .addComponent(scrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 399, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(errLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(nextFileButton)
+                .addGap(67, 67, 67))
         );
 
         pack();
@@ -264,6 +281,7 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel errLabel;
     private javax.swing.JTextField fileNameText;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JButton nextFileButton;
     private javax.swing.JScrollPane scrollPanel;
