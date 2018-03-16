@@ -1,0 +1,90 @@
+Application_20: The application that is most used by clinicians to document patient information.
+Application_20: What is Aria
+
+Application_40: This application is used by CCMB for Client registry.
+Application_40: What is Maxon CR
+
+Application_60: This application ensures all CCMB staff get paid for their worked hours
+Application_60: What is QHR
+
+Application_80: Patient charts that are both electronic and paper
+Application_80: What is a Hybrid chart
+
+Application_100: This is  the previous name of CCMB's EOR
+Application_100: What is OpTxt
+
+Process_20: Their phone number is 204-940-8500
+Process_20: Who is eHealth Service Desk
+
+Process_40: This function or key combination allows you to print your active windows
+Process_40: What is ALT print screen
+
+Process_60: One of these key combinations will lock your screen
+Process_60: What is CTRL ALT DEL or Windows + L
+
+Process_80: This tool is used for reporting incidents and issues identified for learning
+Process_80: What is RL6
+
+Process_100: This allows users to connect to CCMB Applications while away from CCMB locations
+Process_100: What is Extended Office and/or Application Viewer
+
+Hardware_20: These devices found in meeting rooms can allow you to enlarge your computer display
+Hardware_20: What is a projector
+
+Hardware_40: This is the platform which allows you to connect to many applications
+Hardware_40: What is Citrix
+
+Hardware_60: This device that shares the name with a zoo animal can be found in many of Cancer Care clinics
+Hardware_60: What is the Zebra printer
+
+Hardware_80: This device is surrounded by lead covered walls that are up to 6 feet thick
+Hardware_80: What is a Linear Accelarator
+
+Hardware_100: This OS runs CCMB web servers
+Hardware_100: What is Linux
+
+Office Applications_20: This software helps protect your computers against Virus and Malware
+Office Applications_20: What is an anti-virus software
+
+Office Applications_40: This suite of applications is used by all staff for office related documents
+Office Applications_40: What is MS Office
+
+Office Applications_60: This is the name of the old Content Management system
+Office Applications_60: What is Coldfusiont
+
+Office Applications_80: This software is used for emails
+Office Applications_80: What is MS Outlook
+
+Office Applications_100: This software is used for project planning
+Office Applications_100: What is MS Project
+
+Technology_20: 8 bits
+Technology_20: What is a BYTE
+
+Technology_40: 10111001
+Technology_40: What is binary
+
+Technology_60: This application is used to view reports in ARIA
+Technology_60: What is Crystal Report
+
+Technology_80: This solution allows face to face interaction between remote site via technology
+Technology_80: What is Telehealth
+
+Technology_100: This application was replaced by MS Outlook during the Windows 7 IT renewal project
+Technology_100: What is Groupwise
+
+CCMB Infrastructure_20: This is the vendor for Aria
+CCMB Infrastructure_20: What is Varian
+
+CCMB Infrastructure_40: Information Services and Facilities Departments have joined under this new umbrella
+CCMB Infrastructure_40: What is Health Infrastructure Program
+
+CCMB Infrastructure_60: The rural site where radiation treatment is provided
+CCMB Infrastructure_60: What is WMCC ( Brandon)
+
+CCMB Infrastructure_80: This shared drive hosts all shared interdepartmental  folders as well as Aria reports
+CCMB Infrastructure_80: What is the inter drive ( L )
+
+CCMB Infrastructure_100: A networking hardware device that allows a Wi-Fi device to connect to a wired network
+CCMB Infrastructure_100: What is a Wireless Access Point (WAP)
+

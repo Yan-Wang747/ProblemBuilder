@@ -153,6 +153,7 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
         errLabel = new javax.swing.JLabel();
         nextFileButton = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        exportButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -179,6 +180,13 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
 
         jLabel1.setText("Question File:");
 
+        exportButton.setText("Export to TXT");
+        exportButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exportButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -199,6 +207,8 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(exportButton)
+                .addGap(18, 18, 18)
                 .addComponent(nextFileButton)
                 .addContainerGap())
         );
@@ -214,7 +224,9 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(errLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(nextFileButton)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nextFileButton)
+                    .addComponent(exportButton))
                 .addGap(67, 67, 67))
         );
 
@@ -239,6 +251,31 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
         // TODO add your handling code here:
         nextFile();
     }//GEN-LAST:event_nextFileButtonActionPerformed
+
+    private void exportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportButtonActionPerformed
+        // TODO add your handling code here:
+        try {
+            PrintWriter txtOutput = new PrintWriter(new File("Question" + Integer.toString(fileIndex) + ".txt"));
+            for(Category category : theQuestionManager.categories) {
+                String leadingText = category.getCategoryText() + "_";
+                
+                for (Question question : category.questions) {
+                    String heading = leadingText + Integer.toString(question.getCredits()) + ": ";
+                    String questionLine = heading + question.questionText;
+                    txtOutput.println(questionLine);
+                    String answerLine = heading + question.answerText;
+                    txtOutput.println(answerLine);
+                    txtOutput.println();
+                }
+            }
+            
+            txtOutput.flush();
+            txtOutput.close();
+            this.setTitle("Export to txt file succeeded.");
+        } catch (IOException e){
+            
+        }
+    }//GEN-LAST:event_exportButtonActionPerformed
   
     private void nextFile(){
         if(!this.theQuestionManager.categories.isEmpty()){
@@ -280,6 +317,7 @@ public class MainWin extends javax.swing.JFrame implements ActionListener, Obser
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel errLabel;
+    private javax.swing.JButton exportButton;
     private javax.swing.JTextField fileNameText;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel mainPanel;
